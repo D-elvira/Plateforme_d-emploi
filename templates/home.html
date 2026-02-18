@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil | Plateforme Emploi & Stages{% endblock %}
+
+{% block content %}
+<section class="relative bg-indigo-600 text-white py-20">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6" data-aos="fade-down">
+            Trouve ton emploi ou stage idéal
+        </h1>
+        <p class="text-lg md:text-2xl mb-8" data-aos="fade-up" data-aos-delay="200">
+            Parcours des offres fiables et postule en quelques clics
+        </p>
+        <a href="{% url 'offres_list' %}"
+           class="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
+           data-aos="zoom-in" data-aos-delay="400">
+            Voir les Offres
+        </a>
+    </div>
+</section>
+
+<!-- ================= Offres Récentes ================= -->
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Offres récentes</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for offre in offres %}
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:"100" }}">
+                <h3 class="text-xl font-semibold mb-2">{{ offre.titre }}</h3>
+                <p class="text-gray-600 mb-4">{{ offre.entreprise.nom }} - {{ offre.ville }}</p>
+                <p class="text-gray-500 mb-4 truncate">{{ offre.profil_recherche|slice:":100" }}...</p>
+                <a href="{% url 'offre_detail' offre.id %}"
+                   class="text-indigo-600 font-semibold hover:underline">
+                   Voir l'offre
+                </a>
+            </div>
+            {% empty %}
+            <p class="col-span-3 text-center text-gray-500">Aucune offre disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ================= Comment Postuler ================= -->
+<section class="py-20">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-8" data-aos="fade-up">Comment postuler ?</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition" data-aos="fade-right">
+                <h3 class="text-xl font-semibold mb-2">1. Crée ton compte</h3>
+                <p>Inscris-toi en quelques secondes et complète ton profil.</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition" data-aos="fade-up">
+                <h3 class="text-xl font-semibold mb-2">2. Parcours les offres</h3>
+                <p>Consulte les offres d'emploi et stages selon ta ville et ton profil.</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition" data-aos="fade-left">
+                <h3 class="text-xl font-semibold mb-2">3. Postule facilement</h3>
+                <p>Envoie ton CV et ta lettre de motivation directement via la plateforme.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

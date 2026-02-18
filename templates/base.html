@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Plateforme Emploi & Stages{% endblock %}</title>
+
+    <!-- Google Fonts élégants -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN (pour styles modernes & responsive) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Animation smooth pour les liens */
+        .nav-link {
+            @apply text-gray-800 hover:text-indigo-600 transition duration-300 ease-in-out;
+        }
+        /* Shadow doux pour header */
+        header {
+            @apply bg-white shadow-lg sticky top-0 z-50;
+        }
+        /* Animation fade-in pour contenu */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 font-poppins text-gray-800">
+
+    <!-- ================= Navigation Bar ================= -->
+    <header class="px-6 py-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <!-- Logo / Brand -->
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
+                📌 EmploiStage
+            </a>
+
+            <!-- Menu -->
+            <ul class="flex space-x-6 text-lg">
+                <li><a href="{% url 'home' %}" class="nav-link">Accueil</a></li>
+                <li><a href="{% url 'offres_list' %}" class="nav-link">Offres</a></li>
+                <li><a href="{% url 'candidatures_list' %}" class="nav-link">Mes Candidatures</a></li>
+            </ul>
+
+            <!-- Auth Buttons -->
+            <div class="flex space-x-4">
+                {% if user.is_authenticated %}
+                    <span class="font-medium text-indigo-600">Salut, {{ user.username }}</span>
+                    <a href="{% url 'logout' %}"
+                       class="px-4 py-2 font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition">
+                       🔓 Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}"
+                       class="px-4 py-2 font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg transition">
+                       🔑 Connexion
+                    </a>
+                    <a href="{% url 'register' %}"
+                       class="px-4 py-2 font-semibold text-indigo-600 border border-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition">
+                       📝 Inscription
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================= Main Content ================= -->
+    <main class="container mx-auto p-6 fade-in">
+        {% block content %}
+        <!-- contenu spécifique aux pages -->
+        {% endblock %}
+    </main>
+
+    <!-- ================= Footer ================= -->
+    <footer class="bg-indigo-600 text-white text-center py-6 mt-12">
+        <p class="text-sm">&copy; 2026 Plateforme Emploi & Stages • Tous droits réservés</p>
+        <p class="text-xs mt-2">Conçu avec ❤️ par ton app Django</p>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+
