@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<div class="register-container flex items-center justify-center py-20">
+    <div class="register-card w-full max-w-xl">
+        <h2 class="text-center fw-bold mb-2">DERNIÈRE ÉTAPE</h2>
+        <p class="text-center text-muted mb-6">Dans quel domaine souhaitez-vous faire carrière ?</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-6">
+                <label class="form-label fw-bold">Votre Domaine d'Activité (DA)</label>
+                <select name="domaine" id="domaine-select" class="form-control" style="width: 100%" required>
+                    <option value=""></option> <optgroup label="Technologies & Digital">
+                        <option value="informatique">Informatique & Développement</option>
+                        <option value="cyber">Cybersécurité</option>
+                        <option value="data">Data Science & IA</option>
+                    </optgroup>
+                    <optgroup label="Industrie & BTP">
+                        <option value="petrochimie">Pétrochimie</option>
+                        <option value="batiment">Bâtiment & Travaux Publics (BTP)</option>
+                        <option value="electricite">Génie Électrique</option>
+                    </optgroup>
+                    <optgroup label="Services & Artisanat">
+                        <option value="cuisine">Cuisine & Gastronomie</option>
+                        <option value="hotellerie">Hôtellerie & Tourisme</option>
+                        <option value="esthetique">Esthétique & Cosmétique</option>
+                    </optgroup>
+                    <optgroup label="Finance & Gestion">
+                        <option value="economie">Économie & Finance</option>
+                        <option value="comptabilite">Comptabilité & Audit</option>
+                        <option value="marketing">Marketing & Communication</option>
+                    </optgroup>
+                    </select>
+            </div>
+
+            <button type="submit" class="btn-register py-3">Finaliser mon profil</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#domaine-select').select2({
+            placeholder: "Recherchez votre domaine (ex: Pétrochimie...)",
+            allowClear: true,
+            language: {
+                noResults: function() { return "Aucun domaine trouvé"; }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Ajustement pour que Select2 s'intègre au style de votre carte */
+    .select2-container--default .select2-selection--single {
+        height: 50px;
+        padding-top: 10px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+</style>
+
+{% endblock %}

@@ -5,13 +5,15 @@ from django.db import models
 
 # héritage de AbstractUser
 class User(AbstractUser):
-    # Définition des rôles possibles pour un utilisateur
-    #(valeur_en_base, valeur_affichée)
     ROLE_CHOICES = (
         ('candidat', 'Candidat'),
-        ('entreprise', 'Entreprise'),
+        ('recruteur', 'Recruteur'),
     )
-    # CharField → chaîne de caractères
-    # max_length=20 → longueur maximale de 20 caractères
-    # choices=ROLE_CHOICES → l'utilisateur doit avoir un rôle parmi ceux définis ci-dessus
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+
+    # Champs spécifiques aux recruteurs
+    company_name = models.CharField(max_length=255, blank=True, null=True)
+    company_domain = models.CharField(max_length=255, blank=True, null=True)
+    company_city = models.CharField(max_length=100, blank=True, null=True)
+    company_contact = models.CharField(max_length=100, blank=True, null=True)
+    legal_document = models.FileField(upload_to='legal_docs/', blank=True, null=True)

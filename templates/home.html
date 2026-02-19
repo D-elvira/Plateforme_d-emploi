@@ -1,21 +1,36 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Accueil | Plateforme Emploi & Stages{% endblock %}
 
 {% block content %}
-<section class="relative bg-indigo-600 text-white py-20">
-    <div class="container mx-auto text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6" data-aos="fade-down">
-            Trouve ton emploi ou stage idéal
-        </h1>
-        <p class="text-lg md:text-2xl mb-8" data-aos="fade-up" data-aos-delay="200">
-            Parcours des offres fiables et postule en quelques clics
-        </p>
-        <a href="{% url 'offres_list' %}"
-           class="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
-           data-aos="zoom-in" data-aos-delay="400">
-            Voir les Offres
-        </a>
+
+<!-- ================= Hero / Slider ================= -->
+<section class="relative h-screen overflow-hidden">
+    <!-- Slides -->
+    <div class="absolute inset-0 w-full h-full">
+        <div class="slide active bg-cover bg-center w-full h-full" style="background-image: url('{% static 'images/bg1.jpg' %}');"></div>
+        <div class="slide bg-cover bg-center w-full h-full" style="background-image: url('{% static 'images/bg2.jpg' %}');"></div>
+        <div class="slide bg-cover bg-center w-full h-full" style="background-image: url('{% static 'images/bg3.jpg' %}');"></div>
+        <div class="slide bg-cover bg-center w-full h-full" style="background-image: url('{% static 'images/bg4.jpg' %}');"></div>
+        <div class="slide bg-cover bg-center w-full h-full" style="background-image: url('{% static 'images/bg5.jpg' %}');"></div>
+    </div>
+
+    <!-- Overlay sombre pour texte -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6" data-aos="fade-down">
+                Trouve ton emploi ou stage idéal
+            </h1>
+            <p class="text-lg md:text-2xl mb-8 text-gray-200" data-aos="fade-up" data-aos-delay="200">
+                Parcours des offres fiables et postule en quelques clics
+            </p>
+            <a href="{% url 'offres_list' %}"
+               class="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition"
+               data-aos="zoom-in" data-aos-delay="400">
+                Voir les Offres
+            </a>
+        </div>
     </div>
 </section>
 
@@ -61,5 +76,36 @@
         </div>
     </div>
 </section>
+
+<!-- ================= Slider JS ================= -->
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    function nextSlide() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+    }
+
+    setInterval(nextSlide, 4000); // change toutes les 4s
+</script>
+
+<style>
+    /* Slides */
+    .slide {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .slide.active {
+        opacity: 1;
+        z-index: 0;
+    }
+</style>
 
 {% endblock %}

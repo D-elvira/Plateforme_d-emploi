@@ -1,7 +1,10 @@
 from django.urls import path
 from . import views  # Attention aux imports circulaires
+from users import views as users_views  # <-- import ajouté
 
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
+    path('choix_domaine/', users_views.choix_domaine_view, name='choix_domaine'),  # <-- corrigé
+
 ]

@@ -8,8 +8,20 @@ from .models import User
 
 # formulaire d'inscription
 class UserRegisterForm(UserCreationForm):
-    # Classe Meta pour configurer le formulaire
     class Meta:
-        model = User  # Le formulaire va créer/modifier des instances du modèle User
-        # 'password1' et 'password2' : pour saisir et confirmer le mot de passe
-        fields = ['username', 'email', 'role', 'password1', 'password2']
+        model = User
+        fields = [
+            'username', 'email', 'role',
+            'company_name', 'company_domain', 'company_city', 'company_contact',
+            'legal_document',
+            'password1', 'password2'
+        ]
+
+    # Rendre certains champs optionnels
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company_name'].required = False
+        self.fields['company_domain'].required = False
+        self.fields['company_city'].required = False
+        self.fields['company_contact'].required = False
+        self.fields['legal_document'].required = False
