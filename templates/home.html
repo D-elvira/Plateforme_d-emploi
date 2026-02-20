@@ -33,24 +33,51 @@
         </div>
     </div>
 </section>
+<section class="py-24 bg-[#f8fafc]">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-16" data-aos="fade-up">Offres récentes</h2>
 
-<!-- ================= Offres Récentes ================= -->
-<section class="py-20 bg-gray-50">
-    <div class="container mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Offres récentes</h2>
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for offre in offres %}
-            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:"100" }}">
-                <h3 class="text-xl font-semibold mb-2">{{ offre.titre }}</h3>
-                <p class="text-gray-600 mb-4">{{ offre.entreprise.nom }} - {{ offre.ville }}</p>
-                <p class="text-gray-500 mb-4 truncate">{{ offre.profil_recherche|slice:":100" }}...</p>
-                <a href="{% url 'offre_detail' offre.id %}"
-                   class="text-indigo-600 font-semibold hover:underline">
-                   Voir l'offre
-                </a>
+            <div class="group bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-cyan-900/10 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden" data-aos="fade-up">
+
+                <div class="absolute -right-20 -top-20 w-40 h-40 bg-cyan-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                <div class="flex justify-between items-start mb-6 relative z-10">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-cyan-400 font-bold text-xl shadow-lg">
+                            {{ offre.entreprise.nom|slice:":1" }}
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest text-cyan-600">{{ offre.entreprise.nom }}</h4>
+                            <p class="text-[10px] text-slate-400 font-medium"><i class="fas fa-map-marker-alt mr-1"></i> {{ offre.ville|default:"Non spécifié" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8 relative z-10">
+                    <h2 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-cyan-600 transition-colors">
+                        {{ offre.titre }}
+                    </h2>
+                    <p class="text-slate-500 text-sm leading-relaxed line-clamp-2">
+                        {{ offre.profil_recherche|truncatewords:15 }}
+                    </p>
+                </div>
+           <div class="flex items-center justify-between pt-6 border-t border-slate-50 relative z-10">
+    <div>
+        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Type</p>
+        <p class="text-sm font-bold text-slate-900 uppercase">
+            {{ offre.statut }}
+        </p>
+    </div>
+
+    <a href="{% url 'offre_detail' id=offre.id %}" class="flex items-center justify-center w-12 h-12 bg-slate-900 rounded-2xl text-white hover:bg-cyan-500 transition-all duration-300 shadow-lg shadow-slate-200 group-hover:shadow-cyan-200">
+        <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"> Details</i>
+    </a>
+</div>
             </div>
             {% empty %}
-            <p class="col-span-3 text-center text-gray-500">Aucune offre disponible pour le moment.</p>
+            <p class="col-span-full text-center text-gray-500">Aucune offre disponible pour le moment.</p>
             {% endfor %}
         </div>
     </div>

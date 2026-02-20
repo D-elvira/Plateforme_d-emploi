@@ -54,5 +54,5 @@ def offre_detail(request, id):  # Garde 'id' ou 'pk' selon ton url
 def mes_candidatures(request):
     # On récupère les candidatures filtrées par l'email de l'utilisateur connecté
     # Ou mieux, si tu as lié Candidature à User : candidature.user = request.user
-    candidatures = Candidature.objects.filter(email=request.user.email).order_by('-date_envoi')
+    candidatures = Candidature.objects.all().order_by('-date_envoi')
     return render(request, 'offres/mes_candidatures.html', {'candidatures': candidatures})
