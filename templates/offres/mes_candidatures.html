@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen py-20 bg-[#f8fafc]">
+    <div class="container mx-auto px-6 max-w-6xl">
+
+        <div class="mb-12">
+            <h1 class="text-3xl font-light tracking-tight text-slate-900">
+                Mon Suivi <span class="font-bold text-cyan-500">Candidat</span>
+            </h1>
+            <p class="text-slate-500 mt-2">Vous avez postulé à {{ candidatures.count }} opportunité(s) exclusive(s).</p>
+        </div>
+
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Poste & Entreprise</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Date d'envoi</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Statut</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for candidature in candidatures %}
+                    <tr class="hover:bg-cyan-50/30 transition-colors group">
+                        <td class="px-8 py-6">
+                            <div class="font-bold text-slate-900">{{ candidature.offre.titre }}</div>
+                            <div class="text-xs text-cyan-600 font-medium uppercase tracking-tighter">{{ candidature.offre.entreprise.nom }}</div>
+                        </td>
+                        <td class="px-8 py-6 text-sm text-slate-500 font-mono">
+                            {{ candidature.date_envoi|date:"d M Y" }}
+                        </td>
+                        <td class="px-8 py-6">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                                Transmis
+                            </span>
+                        </td>
+                        <td class="px-8 py-6 text-right">
+                            <a href="{{ candidature.cv.url }}" target="_blank" class="text-slate-400 hover:text-cyan-500 transition-colors">
+                                <i class="fas fa-file-pdf text-xl"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-8 py-20 text-center">
+                            <div class="text-slate-300 mb-4"><i class="fas fa-folder-open text-5xl"></i></div>
+                            <p class="text-slate-400 uppercase tracking-widest text-xs">Aucune candidature envoyée pour le moment</p>
+                            <a href="{% url 'offres_list' %}" class="inline-block mt-6 text-cyan-500 font-bold text-xs uppercase underline">Explorer les offres</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

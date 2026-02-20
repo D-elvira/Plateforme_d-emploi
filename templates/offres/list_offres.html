@@ -1,77 +1,97 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-50 min-h-screen py-10">
-    <div class="container mx-auto px-4">
+<div class="min-h-screen py-20 bg-[#f8fafc] text-slate-800">
+    <div class="container mx-auto px-6">
 
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Toutes les opportunités</h1>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Explorez l'ensemble de nos offres de stages et d'emplois.
-                Utilisez les filtres pour affiner votre recherche.
-            </p>
+        <div class="mb-20 text-center">
+            <span class="text-cyan-600 font-bold tracking-[0.3em] uppercase text-xs">Plateforme Emploi Stage</span>
+            <h1 class="text-4xl md:text-5xl font-light tracking-tight text-slate-900 mt-2">
+                Opportunités <span class="font-bold text-cyan-500">Exclusives</span>
+            </h1>
+            <div class="h-1 w-20 bg-cyan-500 mx-auto mt-6 rounded-full"></div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {% for offre in offres %}
+            <div class="job-card relative bg-white border border-slate-200 p-8 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(6,182,212,0.15)] group overflow-hidden rounded-2xl">
 
-            <aside class="w-full lg:w-1/4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm sticky top-24">
-                    <h3 class="font-bold text-lg mb-4 text-indigo-600 border-b pb-2">Filtrer par</h3>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-500"></div>
 
-                    <form method="GET" action="">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Mot-clé</label>
-                            <input type="text" name="q" placeholder="Ex: Développeur..." class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                        </div>
-
-                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
-                            Rechercher
-                        </button>
-                    </form>
-                </div>
-            </aside>
-
-            <main class="w-full lg:w-3/4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {% for offre in offres %}
-                    <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                        <span class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-indigo-700 uppercase bg-indigo-50 rounded-full">
-                            {{ offre.domaine }}
-                        </span>
-
-                        <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                            {{ offre.titre }}
-                        </h2>
-
-                        <div class="flex items-center text-gray-500 text-sm mb-4 gap-4">
-                            <span class="flex items-center gap-1">
-                                <i class="fas fa-map-marker-alt"></i> {{ offre.ville }}
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="far fa-calendar-alt"></i> {{ offre.date_publication|date:"d M Y" }}
-                            </span>
-                        </div>
-
-                        <p class="text-gray-600 text-sm mb-6 line-clamp-3">
-                            {{ offre.description|truncatewords:20 }}
-                        </p>
-
-                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                            <span class="text-indigo-600 font-bold">{{ offre.type_contrat }}</span>
-                            <a href="{% url 'offre_detail' offre.id %}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
-                                Voir plus
-                            </a>
-                        </div>
+                <div class="flex justify-between items-center mb-8">
+                    <span class="text-[10px] font-black tracking-widest uppercase text-cyan-600 bg-cyan-50 px-3 py-1.5 rounded-md border border-cyan-100">
+                        {{ offre.get_type_display }}
+                    </span>
+                    <div class="flex space-x-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover:bg-cyan-400 transition-colors"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-slate-200 group-hover:bg-cyan-400 transition-colors delay-75"></div>
                     </div>
-                    {% empty %}
-                    <div class="col-span-full text-center py-20 bg-white rounded-2xl shadow-sm">
-                        <i class="fas fa-search fa-3x text-gray-200 mb-4"></i>
-                        <p class="text-gray-500 text-lg">Aucune offre ne correspond à votre recherche.</p>
-                    </div>
-                    {% endfor %}
                 </div>
-            </main>
+
+                <h2 class="text-2xl font-bold mb-2 text-slate-900 group-hover:text-cyan-600 transition-colors">
+                    {{ offre.titre }}
+                </h2>
+                <div class="flex items-center text-cyan-500 font-semibold text-xs uppercase tracking-tighter mb-6">
+                    <span class="w-4 h-[1px] bg-cyan-500 mr-2"></span>
+                    {{ offre.entreprise.nom }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="flex items-center text-xs text-slate-500 font-medium">
+                        <i class="fas fa-location-dot mr-2 text-cyan-400"></i>
+                        {{ offre.ville }}
+                    </div>
+                    <div class="flex items-center text-xs text-slate-500 font-medium">
+                        <i class="fas fa-briefcase mr-2 text-cyan-400"></i>
+                        {{ offre.get_categorie_display }}
+                    </div>
+                </div>
+
+                <p class="text-slate-500 text-sm leading-relaxed mb-10 line-clamp-3">
+                    {{ offre.profil_recherche|truncatewords:22 }}
+                </p>
+
+                <a href="{% url 'offre_detail' id=offre.id %}" class="group/btn relative flex items-center justify-between w-full px-6 py-4 bg-slate-900 rounded-xl overflow-hidden transition-all duration-300 hover:bg-cyan-600 shadow-lg shadow-slate-200 hover:shadow-cyan-200">
+                    <span class="relative z-10text-xs font-bold uppercase tracking-widest text-white">
+                        Découvrir l'offre
+                    </span>
+                    <i class="fas fa-chevron-right relative z-10 text-white transform group-hover/btn:translate-x-1 transition-transform"></i>
+                </a>
+
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-24 bg-white border border-slate-100 rounded-3xl">
+                <i class="fas fa-inbox text-4xl text-slate-200 mb-4"></i>
+                <p class="text-slate-400 tracking-widest uppercase text-xs">Aucune opportunité pour le moment</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
+
+<style>
+    /* Animation fluide sans calculs Django */
+    .job-card {
+        animation: slideUpFade 0.7s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Délais d'affichage */
+    .job-card:nth-child(1) { animation-delay: 0.1s; }
+    .job-card:nth-child(2) { animation-delay: 0.2s; }
+    .job-card:nth-child(3) { animation-delay: 0.3s; }
+    .job-card:nth-child(4) { animation-delay: 0.4s; }
+    .job-card:nth-child(n+5) { animation-delay: 0.5s; }
+</style>
 {% endblock %}

@@ -1,7 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Offre
 from django.db.models import Q
-
+from .forms import CandidatureForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Candidature
 
 # Page d'accueil intelligente
 def home(request):
@@ -30,7 +33,26 @@ def offres_list(request):
     offres = Offre.objects.filter(statut='disponible').order_by('-id')
     return render(request, "offres/list_offres.html", {"offres": offres})
 
-# Détail d'une offre
-def offre_detail(request, id):
+
+def offre_detail(request, id):  # Garde 'id' ou 'pk' selon ton url
     offre = get_object_or_404(Offre, id=id)
-    return render(request, "offres/details_offre.html", {"offre": offre})
+
+    if request.method == 'POST':
+        form = CandidatureForm(request.POST, request.FILES)
+        if form.is_valid():
+            candidature = form.save(commit=False)
+            candidature.offre = offre
+            candidature.save()
+            messages.success(request, "Votre candidature a été envoyée avec succès !")
+            return redirect('offre_detail', id=offre.id)
+    else:
+        form = CandidatureForm()
+
+    return render(request, 'offres/offre_detail.html', {'offre': offre, 'form': form})
+
+@login_required
+def mes_candidatures(request):
+    # On récupère les candidatures filtrées par l'email de l'utilisateur connecté
+    # Ou mieux, si tu as lié Candidature à User : candidature.user = request.user
+    candidatures = Candidature.objects.filter(email=request.user.email).order_by('-date_envoi')
+    return render(request, 'offres/mes_candidatures.html', {'candidatures': candidatures})
