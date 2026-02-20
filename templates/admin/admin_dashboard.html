@@ -1,0 +1,137 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Tableau de bord{% endblock %}
+{% block page_subtitle %}Vue d'ensemble de la plateforme{% endblock %}
+
+{% block admin_content %}
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+    <!-- Users -->
+    <div class="stat-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <i class="bi bi-people-fill text-xl text-blue-600"></i>
+            </div>
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Utilisateurs</span>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ total_users }}</p>
+        <div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">
+            <span><strong class="text-emerald-600">{{ total_candidats }}</strong> candidats</span>
+            <span>·</span>
+            <span><strong class="text-purple-600">{{ total_recruteurs }}</strong> recruteurs</span>
+        </div>
+    </div>
+
+    <!-- Offres -->
+    <div class="stat-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
+                <i class="bi bi-briefcase-fill text-xl text-emerald-600"></i>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Offres</span>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ total_offres }}</p>
+        <div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">
+            <span><strong class="text-blue-600">{{ offres_emploi }}</strong> emplois</span>
+            <span>·</span>
+            <span><strong class="text-amber-600">{{ offres_stage }}</strong> stages</span>
+        </div>
+    </div>
+
+    <!-- Candidatures -->
+    <div class="stat-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
+                <i class="bi bi-envelope-paper-fill text-xl text-purple-600"></i>
+            </div>
+            <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">Candidatures</span>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ total_candidatures }}</p>
+        <p class="text-xs text-gray-500 mt-2">Total des candidatures reçues</p>
+    </div>
+
+    <!-- Entreprises -->
+    <div class="stat-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                <i class="bi bi-building text-xl text-amber-600"></i>
+            </div>
+            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">Entreprises</span>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ total_entreprises }}</p>
+        <p class="text-xs text-gray-500 mt-2">Entreprises partenaires</p>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <!-- Dernières Offres -->
+    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-bold text-gray-900 text-sm">Dernières Offres</h3>
+            <a href="{% url 'admin_offres' %}" class="text-xs text-blue-600 hover:text-blue-700 font-semibold">Voir tout
+                →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-xs uppercase text-gray-400 border-b border-gray-100">
+                        <th class="px-6 py-3 text-left font-semibold">Titre</th>
+                        <th class="px-6 py-3 text-left font-semibold">Entreprise</th>
+                        <th class="px-6 py-3 text-left font-semibold">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offre in dernieres_offres %}
+                    <tr class="table-row border-b border-gray-50">
+                        <td class="px-6 py-3.5 font-semibold text-gray-900">{{ offre.titre|truncatewords:4 }}</td>
+                        <td class="px-6 py-3.5 text-gray-500">{{ offre.entreprise.nom }}</td>
+                        <td class="px-6 py-3.5">
+                            <span
+                                class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {% if offre.type == 'emploi' %}bg-blue-50 text-blue-700{% else %}bg-amber-50 text-amber-700{% endif %}">{{ offre.type }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-6 py-8 text-center text-gray-400">Aucune offre</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Dernières Candidatures -->
+    <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-bold text-gray-900 text-sm">Dernières Candidatures</h3>
+            <a href="{% url 'admin_candidatures' %}"
+                class="text-xs text-blue-600 hover:text-blue-700 font-semibold">Voir tout →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-xs uppercase text-gray-400 border-b border-gray-100">
+                        <th class="px-6 py-3 text-left font-semibold">Candidat</th>
+                        <th class="px-6 py-3 text-left font-semibold">Offre</th>
+                        <th class="px-6 py-3 text-left font-semibold">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in dernieres_candidatures %}
+                    <tr class="table-row border-b border-gray-50">
+                        <td class="px-6 py-3.5 font-semibold text-gray-900">{{ c.nom_complet }}</td>
+                        <td class="px-6 py-3.5 text-gray-500">{{ c.offre.titre|truncatewords:4 }}</td>
+                        <td class="px-6 py-3.5 text-gray-400 text-xs">{{ c.date_envoi|date:"d M Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-6 py-8 text-center text-gray-400">Aucune candidature</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

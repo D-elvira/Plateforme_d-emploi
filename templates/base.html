@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,162 +11,374 @@
     <link rel="icon" type="image/png" href="{% static 'images/image.png' %}">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: all;
+            min-width: 300px;
+            max-width: 420px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transform: translateX(120%);
+            animation: toastIn 0.4s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast.removing {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .toast-warning {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
+
+        .toast-info {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 0 0 14px 14px;
+            animation: toastProgress 4s linear forwards;
+        }
+
+        .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 18px;
+            background: none;
+            border: none;
+            color: white;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes toastProgress {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .toast-container {
+                right: 10px;
+                left: 10px;
+            }
+
+            .toast {
+                min-width: auto;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-poppins text-gray-800">
 
-  <!-- ========== Header ========== -->
-<header class="bg-white shadow-lg sticky top-0 z-50">
-    <nav class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
 
-<a href="{% url 'home' %}" class="relative h-12 w-48 block">
-    <img src="{% static 'images/img.png' %}"
-         alt="img"
-         class="absolute top-1/2 -translate-y-1/2 left-0 max-w-none h-[137px] w-auto object-contain">
-</a>
+            <a href="{% url 'home' %}" class="relative h-10 sm:h-12 w-36 sm:w-48 block flex-shrink-0">
+                <img src="{% static 'images/img.png' %}" alt="Logo"
+                    class="absolute top-1/2 -translate-y-1/2 left-0 max-w-none h-[100px] sm:h-[137px] w-auto object-contain">
+            </a>
 
-        <!-- Menu Desktop -->
-        <ul class="hidden md:flex space-x-6 text-lg items-center">
-            <li>
+            <!-- Menu Desktop -->
+            <ul class="hidden md:flex space-x-1 lg:space-x-4 items-center">
+                <li>
+                    <a href="{% url 'home' %}"
+                        class="px-3 py-2 text-sm lg:text-base text-gray-700 font-medium hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all">Accueil</a>
+                </li>
+                <li>
+                    <a href="{% url 'offres_list' %}"
+                        class="px-3 py-2 text-sm lg:text-base text-gray-700 font-medium hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all">Offres</a>
+                </li>
+                <li>
+                    <a href="{% url 'mes_candidatures' %}"
+                        class="px-3 py-2 text-sm lg:text-base text-gray-700 font-medium hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all">Mes
+                        Candidatures</a>
+                </li>
+            </ul>
+
+            <!-- Auth Desktop -->
+            <div class="hidden md:flex items-center space-x-2 lg:space-x-3">
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}"
+                    class="inline-flex items-center px-3 py-1.5 border border-emerald-500 text-emerald-600 text-xs font-bold uppercase rounded-full hover:bg-emerald-500 hover:text-white transition-all">
+                    <i class="bi bi-shield-fill mr-1"></i>Admin
+                </a>
+                {% endif %}
+                {% if user.role == 'recruteur' %}
+                <a href="{% url 'recruteur_dashboard' %}"
+                    class="inline-flex items-center px-3 py-1.5 border border-blue-500 text-blue-600 text-xs font-bold uppercase rounded-full hover:bg-blue-500 hover:text-white transition-all">
+                    <i class="bi bi-briefcase-fill mr-1"></i>Espace Recruteur
+                </a>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <span class="text-sm text-gray-600 font-medium hidden lg:inline">{{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all">Déconnexion</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-all">Connexion</a>
+                <a href="{% url 'register' %}"
+                    class="px-4 py-2 border border-blue-600 text-blue-600 text-sm font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-all">Inscription</a>
+                {% endif %}
+            </div>
+
+            <!-- Bouton Mobile -->
+            <button id="menu-btn" class="md:hidden text-2xl text-gray-600 hover:text-gray-900 transition p-1">
+                <i class="bi bi-list" id="menu-icon"></i>
+            </button>
+        </nav>
+
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
+            <div class="px-4 py-4 space-y-2">
                 <a href="{% url 'home' %}"
-                   class="text-gray-800 border-b-4 border-transparent hover:border-blue-500 hover:shadow-lg transition duration-300">
-                   Accueil
+                    class="block px-4 py-2.5 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                    <i class="bi bi-house-fill mr-2"></i>Accueil
                 </a>
-            </li>
-            <li>
                 <a href="{% url 'offres_list' %}"
-                   class="text-gray-800 border-b-4 border-transparent hover:border-blue-500 hover:shadow-lg transition duration-300">
-                   Offres
+                    class="block px-4 py-2.5 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                    <i class="bi bi-briefcase-fill mr-2"></i>Offres
                 </a>
-            </li>
-            <li>
                 <a href="{% url 'mes_candidatures' %}"
-                   class="text-gray-800 border-b-4 border-transparent hover:border-blue-500 hover:shadow-lg transition duration-300">
-                   Mes Candidatures
+                    class="block px-4 py-2.5 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                    <i class="bi bi-envelope-paper-fill mr-2"></i>Mes Candidatures
                 </a>
-            </li>
-        </ul>
 
-        <!-- Auth Desktop -->
-        <div class="hidden md:flex space-x-4 items-center">
-            {% if user.is_staff %}
-    <a href="{% url 'admin:index' %}"
-       class="inline-flex items-center px-3 py-1.5 border border-green-500 text-green-600 text-xs font-bold uppercase rounded-full hover:bg-green-500 hover:text-white transition duration-300 me-3">
-        <i class="fas fa-user-shield me-1"></i> Admin
-    </a>
-{% endif %}
-            {% if user.is_authenticated %}
-                <span class="text-indigo-600 font-medium">Salut, {{ user.username }}</span>
-<form action="{% url 'logout' %}" method="post" class="inline">
-    {% csrf_token %}
-    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-red-600 transition">
-        Déconnexion
-    </button>
-</form>            {% else %}
-                <a href="{% url 'login' %}" class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">Connexion</a>
-                <a href="{% url 'register' %}" class="px-4 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">Inscription</a>
-            {% endif %}
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}"
+                    class="block px-4 py-2.5 text-emerald-600 font-medium hover:bg-emerald-50 rounded-lg transition-all">
+                    <i class="bi bi-shield-fill mr-2"></i>Admin
+                </a>
+                {% endif %}
+                {% if user.role == 'recruteur' %}
+                <a href="{% url 'recruteur_dashboard' %}"
+                    class="block px-4 py-2.5 text-blue-600 font-medium hover:bg-blue-50 rounded-lg transition-all">
+                    <i class="bi bi-briefcase-fill mr-2"></i>Espace Recruteur
+                </a>
+                {% endif %}
+
+                <div class="pt-2 border-t border-gray-100">
+                    {% if user.is_authenticated %}
+                    <p class="px-4 py-1 text-sm text-gray-400">Connecté : <strong class="text-gray-700">{{ user.username
+                            }}</strong></p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="w-full mt-2 px-4 py-2.5 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition-all text-sm">
+                            <i class="bi bi-box-arrow-right mr-2"></i>Déconnexion
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'login' %}"
+                            class="flex-1 text-center px-4 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all text-sm">Connexion</a>
+                        <a href="{% url 'register' %}"
+                            class="flex-1 text-center px-4 py-2.5 border border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-all text-sm">Inscription</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-
-        <!-- Bouton Mobile -->
-        <button id="menu-btn" class="md:hidden text-2xl">☰</button>
-    </nav>
-
-    <!-- Menu Mobile -->
-    <div id="mobile-menu" class="hidden flex-col px-4 pb-4 md:hidden space-y-3">
-        <a href="{% url 'home' %}" class="block text-gray-800 hover:text-blue-500 transition">Accueil</a>
-        <a href="{% url 'offres_list' %}" class="block text-gray-800 hover:text-blue-500 transition">Offres</a>
-        <a href="{% url 'candidatures_list' %}" class="block text-gray-800 hover:text-blue-500 transition">Mes Candidatures</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="block px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Déconnexion</a>
-        {% else %}
-            <a href="{% url 'login' %}" class="block px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">Connexion</a>
-            <a href="{% url 'register' %}" class="block px-4 py-2 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">Inscription</a>
+    </header>
+<div class="toast-container" id="toast-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}{% else %}info{% endif %}"
+            data-auto-dismiss="4000">
+            <i
+                class="bi bi-{% if message.tags %}{% if 'success' in message.tags %}check-circle-fill{% elif 'error' in message.tags %}x-circle-fill{% elif 'warning' in message.tags %}exclamation-triangle-fill{% else %}info-circle-fill{% endif %}{% else %}info-circle-fill{% endif %}"></i>
+            <span>{{ message }}</span>
+            <button class="toast-close" onclick="dismissToast(this.parentElement)">&times;</button>
+            <div class="toast-progress"></div>
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
-</header>
-
-    <!-- ========== Main Content ========== -->
-    <main class="container mx-auto p-6">
+<main class="flex-1">
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="bg-[#0f172a] text-gray-400 mt-20 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 py-16">
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
-
-            <div class="md:col-span-5">
-                <div class="flex items-center space-x-3 mb-6">
-                    <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <span class="text-white font-bold text-xl">P</span>
+<footer class="bg-[#0f172a] text-gray-400 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12">
+                <div class="sm:col-span-2 lg:col-span-5">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                            <span class="text-white font-bold text-xl">P</span>
+                        </div>
+                        <h4 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">Plateforme
+                                Emploi</span>
+                        </h4>
                     </div>
-                   <h4 class="text-2xl font-extrabold text-white tracking-tight">
-    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
-         Plateforme Emploi & Stage
-    </span>
-</h4>
+                    <p class="text-gray-400 leading-relaxed max-w-sm mb-6 text-sm sm:text-base">
+                        L'excellence au service de votre carrière. Nous connectons les talents camerounais aux leaders
+                        de l'industrie.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-[#0077b5] hover:text-white transition-all border border-gray-700"><i
+                                class="bi bi-linkedin"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-[#1877f2] hover:text-white transition-all border border-gray-700"><i
+                                class="bi bi-facebook"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-gradient-to-tr hover:from-orange-500 hover:to-purple-600 hover:text-white transition-all border border-gray-700"><i
+                                class="bi bi-instagram"></i></a>
+                    </div>
                 </div>
-                <p class="text-gray-400 leading-relaxed max-w-sm mb-8">
-                    L'excellence au service de votre carrière. Nous connectons les talents camerounais aux leaders de l'industrie pour bâtir l'avenir.
-                </p>
-             <div class="flex space-x-4">
-    <a href="linkedin.com" class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-[#0077b5] hover:text-white transition-all duration-300 border border-gray-700">
-        <i class="bi bi-linkedin text-lg"></i>
-    </a>
 
-    <a href="facebook.com" class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-[#1877f2] hover:text-white transition-all duration-300 border border-gray-700">
-        <i class="bi bi-facebook text-lg"></i>
-    </a>
+                <div class="lg:col-span-3">
+                    <h5 class="text-lg font-bold text-white mb-4">Navigation</h5>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="{% url 'home' %}"
+                                class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all">Accueil</a>
+                        </li>
+                        <li><a href="{% url 'offres_list' %}"
+                                class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all">Parcourir
+                                les offres</a></li>
+                        <li><a href="{% url 'mes_candidatures' %}"
+                                class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all">Suivi des
+                                candidatures</a></li>
+                        <li><a href="{% url 'register' %}"
+                                class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all">S'inscrire</a>
+                        </li>
+                    </ul>
+                </div>
 
-    <a href="https://www.instagram.com/" class="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center hover:bg-gradient-to-tr hover:from-orange-500 hover:to-purple-600 hover:text-white transition-all duration-300 border border-gray-700">
-        <i class="bi bi-instagram text-lg"></i>
-    </a>
-</div>
-            </div>
-
-            <div class="md:col-span-3">
-                 <h5 class="text-2xl font-extrabold text-white tracking-tight">
-    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
-         Navigation
-    </span>
-</h5>                <ul class="space-y-4">
-                    <li><a href="{% url 'home' %}" class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all duration-200">Accueil</a></li>
-                    <li><a href="{% url 'offres_list' %}" class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all duration-200">Parcourir les offres</a></li>
-                    <li><a href="{% url 'candidatures_list' %}" class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all duration-200">Suivi des candidatures</a></li>
-                    <li><a href="#" class="hover:text-indigo-400 hover:translate-x-1 inline-block transition-all duration-200">Espace Recruteur</a></li>
-                </ul>
-            </div>
-
-   <div class="md:col-span-4 flex flex-col items-center md:items-end justify-center">
-    <div class="w-full max-w-[300px]">
-        <div class="bg-gray-800/30 border border-gray-700 rounded-xl overflow-hidden">
-            <img src="{% static 'images/img.png' %}"
-                 alt="Branding"
-                 class="w-full h-auto object-contain p-6">
-        </div>
-
-        <p class="text-[10px] uppercase tracking-widest text-gray-600 mt-3 text-center md:text-right">
-            Propulsé par l'innovation technologique
-        </p>
-    </div>
-</div>
-</div>
-        </div>
-
-        <div class="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
-            <p>&copy; 2026 Plateforme Emploi & Stages au Cameroun.</p>
-            <div class="flex space-x-6 mt-4 md:mt-0">
-                <a href="#" class="hover:text-white transition">Mentions légales</a>
-                <a href="#" class="hover:text-white transition">Confidentialité</a>
+                <div class="lg:col-span-4 flex flex-col items-center lg:items-end justify-center">
+                    <div class="w-full max-w-[250px]">
+                        <div class="bg-gray-800/30 border border-gray-700 rounded-xl overflow-hidden">
+                            <img src="{% static 'images/img.png' %}" alt="Branding"
+                                class="w-full h-auto object-contain p-4 sm:p-6">
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-600 mt-3 text-center lg:text-right">
+                            Propulsé par l'innovation technologique
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
 
+        <div class="border-t border-gray-800 py-6 sm:py-8">
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm space-y-3 sm:space-y-0">
+                <p>&copy; 2026 Plateforme Emploi & Stages au Cameroun.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-white transition">Mentions légales</a>
+                    <a href="#" class="hover:text-white transition">Confidentialité</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('hidden')) {
+                    menuIcon.className = 'bi bi-list';
+                } else {
+                    menuIcon.className = 'bi bi-x-lg';
+                }
+            });
+        }
+
+        // Toast Notifications
+        function dismissToast(el) {
+            el.classList.add('removing');
+            setTimeout(() => el.remove(), 300);
+        }
+
+        document.querySelectorAll('.toast[data-auto-dismiss]').forEach(function (toast, i) {
+            const delay = parseInt(toast.dataset.autoDismiss) + (i * 500);
+            setTimeout(() => dismissToast(toast), delay);
+        });
+    </script>
 </body>
+
 </html>

@@ -21,9 +21,10 @@
         padding: 40px;
         width: 100%;
         max-width: 450px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         z-index: 10;
     }
+
     .login-card::before {
         content: "";
         position: absolute;
@@ -56,6 +57,7 @@
         text-transform: uppercase;
         transition: 0.3s;
     }
+
     .btn-login:hover {
         background: #0056b3;
         transform: translateY(-2px);
@@ -82,46 +84,52 @@
     }
 
     @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+        0% {
+            background-position: 0% 50%;
+        }
 
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
 </style>
 
 <div class="login-container">
     <div class="login-card">
         <h2 class="text-center fw-bold mb-4" style="letter-spacing: 2px;">CONNEXION</h2>
 
-        <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
+        <form method="post" action="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+            {% csrf_token %}
+            {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
 
-    {% if messages %}
-        {% for message in messages %}
+            {% if messages %}
+            {% for message in messages %}
             <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+            {% endfor %}
+            {% endif %}
 
-    <!-- Username -->
-    <div class="mb-4">
-        <input type="text"
-               name="username"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-               placeholder="Nom d'utilisateur"
-               required>
-    </div>
+            <!-- Username -->
+            <div class="mb-4">
+                <input type="text" name="username"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                    placeholder="Nom d'utilisateur" required>
+            </div>
 
-    <!-- Password -->
-    <div class="mb-4">
-       <input type="password"
-               name="password"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-               placeholder="Mot de passe"
-               required>
-    </div>
+            <!-- Password -->
+            <div class="mb-4">
+                <input type="password" name="password"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                    placeholder="Mot de passe" required>
+            </div>
 
-    <button type="submit" class="btn-login">Se connecter</button>
-</form>
+            <button type="submit" class="btn-login">Se connecter</button>
+        </form>
 
 
         <div class="mt-4 text-center border-top pt-3">

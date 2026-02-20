@@ -1,0 +1,91 @@
+{% extends "recruteur/recruteur_base.html" %}
+
+{% block page_title %}Mes offres{% endblock %}
+{% block page_subtitle %}Gérer vos offres publiées{% endblock %}
+
+{% block content %}
+{% if offres_data %}
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {% for item in offres_data %}
+    <div
+        class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col">
+        <!-- Card Header -->
+        <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-3">
+                <span
+                    class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase {% if item.offre.type == 'emploi' %}bg-blue-50 text-blue-700{% else %}bg-amber-50 text-amber-700{% endif %}">{{ item.offre.type }}</span>
+                {% if item.offre.statut == 'disponible' %}
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1"></span>Active
+                </span>
+                {% else %}
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-500">
+                    <span class="w-1.5 h-1.5 bg-red-400 rounded-full mr-1"></span>Fermée
+                </span>
+                {% endif %}
+            </div>
+
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-tight">{{ item.offre.titre }}</h3>
+
+            <div class="flex items-center space-x-3 text-xs text-gray-400 mb-4">
+                <span class="flex items-center space-x-1"><i class="bi bi-geo-alt-fill"></i><span>{{ item.offre.ville }}</span></span>
+                <span class="flex items-center space-x-1"><i class="bi bi-tag-fill"></i><span>{{ item.offre.get_categorie_display }}</span></span>
+            </div>
+
+            <!-- Candidatures badge -->
+            <a href="{% url 'recruteur_candidatures' item.offre.id %}"
+                class="inline-flex items-center space-x-2 px-3 py-2 bg-purple-50 text-purple-700 rounded-xl text-xs font-semibold hover:bg-purple-100 transition-colors">
+                <i class="bi bi-people-fill"></i>
+                <span>{{ item.nb_candidatures }} candidature{{ item.nb_candidatures|pluralize }}</span>
+                <i class="bi bi-arrow-right text-[10px]"></i>
+            </a>
+        </div>
+
+        <!-- Card Actions -->
+        <div class="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <a href="{% url 'recruteur_modifier_offre' item.offre.id %}"
+                    class="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
+                    title="Modifier">
+                    <i class="bi bi-pencil-square"></i><span>Modifier</span>
+                </a>
+                <span class="text-gray-300">|</span>
+                <form method="POST" action="{% url 'recruteur_toggle_offre' item.offre.id %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="text-xs font-medium flex items-center space-x-1 {% if item.offre.statut == 'disponible' %}text-amber-500 hover:text-amber-600{% else %}text-emerald-500 hover:text-emerald-600{% endif %}">
+                        <i
+                            class="bi bi-{% if item.offre.statut == 'disponible' %}pause-circle{% else %}play-circle{% endif %}"></i>
+                        <span>{% if item.offre.statut == 'disponible' %}Fermer{% else %}Activer{% endif %}</span>
+                    </button>
+                </form>
+            </div>
+            <form method="POST" action="{% url 'recruteur_supprimer_offre' item.offre.id %}"
+                onsubmit="return confirm('Supprimer cette offre définitivement ?')">
+                {% csrf_token %}
+                <button type="submit" class="text-red-400 hover:text-red-600 transition-colors" title="Supprimer">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- Empty State -->
+<div class="text-center py-20">
+    <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="bi bi-briefcase text-3xl text-blue-400"></i>
+    </div>
+    <h3 class="text-xl font-bold text-gray-900 mb-2">Aucune offre publiée</h3>
+    <p class="text-gray-400 text-sm mb-6 max-w-sm mx-auto">Publiez votre première offre et commencez à recevoir des
+        candidatures.</p>
+    <a href="{% url 'recruteur_poster_offre' %}"
+        class="btn-primary inline-flex items-center space-x-2 px-6 py-3 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-md">
+        <i class="bi bi-plus-lg"></i><span>Publier une offre</span>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

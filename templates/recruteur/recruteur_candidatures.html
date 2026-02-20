@@ -1,0 +1,98 @@
+{% extends "recruteur/recruteur_base.html" %}
+
+{% block page_title %}Candidatures{% endblock %}
+{% block page_subtitle %}{{ offre.titre }}{% endblock %}
+
+{% block content %}
+<!-- Offer Info Card -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center space-x-4">
+            <div
+                class="w-12 h-12 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                <i class="bi bi-briefcase-fill text-white text-lg"></i>
+            </div>
+            <div>
+                <h2 class="font-bold text-gray-900 text-lg">{{ offre.titre }}</h2>
+                <div class="flex items-center space-x-3 text-xs text-gray-400 mt-1">
+                    <span class="flex items-center space-x-1"><i class="bi bi-geo-alt-fill"></i><span>{{ offre.ville }}</span></span>
+                    <span
+                        class="px-2 py-0.5 rounded-full font-bold uppercase {% if offre.type == 'emploi' %}bg-blue-50 text-blue-700{% else %}bg-amber-50 text-amber-700{% endif %}">{{ offre.type }}</span>
+                    {% if offre.statut == 'disponible' %}
+                    <span class="text-emerald-500 font-bold">● Active</span>
+                    {% else %}
+                    <span class="text-red-400 font-bold">● Fermée</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-bold">
+                <i class="bi bi-people-fill mr-1"></i>{{ candidatures|length }} candidature{{ candidatures|length|pluralize }}
+            </span>
+            <a href="{% url 'recruteur_mes_offres' %}" class="text-sm text-gray-500 hover:text-gray-700 font-medium">←
+                Retour</a>
+        </div>
+    </div>
+</div>
+
+<!-- Candidatures List -->
+{% if candidatures %}
+<div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-xs uppercase text-gray-400 border-b border-gray-100 bg-gray-50/50">
+                    <th class="px-6 py-3.5 text-left font-semibold">Candidat</th>
+                    <th class="px-6 py-3.5 text-left font-semibold">Email</th>
+                    <th class="px-6 py-3.5 text-left font-semibold">Message</th>
+                    <th class="px-6 py-3.5 text-left font-semibold">Date</th>
+                    <th class="px-6 py-3.5 text-center font-semibold">CV</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in candidatures %}
+                <tr class="table-row border-b border-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-9 h-9 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                                {{ c.nom_complet|first|upper }}</div>
+                            <span class="font-semibold text-gray-900">{{ c.nom_complet }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">
+                        <a href="mailto:{{ c.email }}" class="text-blue-600 hover:text-blue-700">{{ c.email }}</a>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500 max-w-[250px]">
+                        <p class="truncate" title="{{ c.message }}">{{ c.message|truncatewords:12|default:"Pas de message" }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400 text-xs">{{ c.date_envoi|date:"d M Y à H:i" }}</td>
+                    <td class="px-6 py-4 text-center">
+                        {% if c.cv %}
+                        <a href="{{ c.cv.url }}" target="_blank"
+                            class="inline-flex items-center space-x-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
+                            <i class="bi bi-file-earmark-arrow-down"></i><span>Télécharger</span>
+                        </a>
+                        {% else %}
+                        <span class="text-gray-300 text-xs">Pas de CV</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<!-- Empty State -->
+<div class="text-center py-20 bg-white rounded-2xl border border-gray-100">
+    <div class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="bi bi-inbox text-3xl text-purple-400"></i>
+    </div>
+    <h3 class="text-xl font-bold text-gray-900 mb-2">Aucune candidature</h3>
+    <p class="text-gray-400 text-sm max-w-sm mx-auto">Personne n'a encore postulé à cette offre. Partagez-la pour
+        attirer des candidats !</p>
+</div>
+{% endif %}
+{% endblock %}

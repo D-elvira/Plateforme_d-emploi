@@ -1,4 +1,3 @@
-# On importe AbstractUser pour créer un modèle utilisateur personnalisé
 from django.contrib.auth.models import AbstractUser
 # définition des champs de notre modèle
 from django.db import models

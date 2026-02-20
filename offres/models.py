@@ -1,7 +1,5 @@
-# On importe models pour créer des modèles de base de données
 from django.db import models
 
-# On importe notre modèle utilisateur personnalisé
 from users.models import User
 
 class DA(models.Model):
