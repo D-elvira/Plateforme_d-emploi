@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
+from .models import User
 
 def register(request):
     if request.method == 'POST':
@@ -30,23 +31,58 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        # On utilise .get() pour éviter l'erreur MultiValueDictKeyError si le champ est vide
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        # Vérification de sécurité de base
+        if not username or not password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return render(request, 'users/connexion.html')
+
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
-            return redirect('home')  # page d'accueil
+            messages.success(request, f"Ravi de vous revoir, {username} !")
+            return redirect('home')
         else:
+            # Si on arrive ici, c'est soit le mauvais MDP, soit l'utilisateur n'existe pas
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+
     return render(request, 'users/connexion.html')
 
 
 def choix_domaine_view(request):
     user_id = request.session.get('profiling_user_id')
-    if request.method == 'POST':
-        domaine = request.POST.get('domaine')
-        # Ici tu peux sauvegarder le domaine dans ton modèle User ou Profil
-        # Exemple: User.objects.filter(id=user_id).update(domaine=domaine)
-        return redirect('home')  # après avoir choisi le domaine
 
-    return render(request, 'choix_domaine.html')
+    # Sécurité : si on arrive ici sans id en session, on renvoie à l'inscription
+    if not user_id:
+        return redirect('register')
+
+    if request.method == 'POST':
+        # On récupère la chaîne de caractères (ex: "Informatique,BTP,Santé")
+        domaines_str = request.POST.get('domaines_selectionnes')
+
+        try:
+            user = User.objects.get(id=user_id)
+            # On enregistre la chaîne dans le champ domaine_activite
+            user.domaine_activite = domaines_str
+            user.save()
+
+            # Connexion automatique de l'utilisateur
+            login(request, user)
+
+            # Nettoyer la session après usage pour éviter les conflits
+            if 'profiling_user_id' in request.session:
+                del request.session['profiling_user_id']
+
+            messages.success(request, "Profil complété avec succès ! Voici les offres qui pourraient vous intéresser.")
+
+            # Redirection directe vers la liste des offres (ou home si tu as mis les offres sur la home)
+            return redirect('offres_list')
+
+        except User.DoesNotExist:
+            return redirect('register')
+
+    return render(request, 'users/choix_domaine.html')

@@ -10,7 +10,7 @@ class User(AbstractUser):
         ('recruteur', 'Recruteur'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-
+    domaine_activite = models.CharField(max_length=100, blank=True, null=True)
     # Champs spécifiques aux recruteurs
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_domain = models.CharField(max_length=255, blank=True, null=True)

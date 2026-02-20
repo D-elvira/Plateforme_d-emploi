@@ -3,67 +3,132 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<div class="register-container flex items-center justify-center py-20">
-    <div class="register-card w-full max-w-xl">
-        <h2 class="text-center fw-bold mb-2">DERNIÈRE ÉTAPE</h2>
-        <p class="text-center text-muted mb-6">Dans quel domaine souhaitez-vous faire carrière ?</p>
+<div class="register-container flex items-center justify-center py-10 min-h-screen">
+    <div class="register-card w-full max-w-2xl p-8 bg-white shadow-xl rounded-2xl">
+        <h2 class="text-center font-bold text-2xl mb-2 text-blue-600">VOS DOMAINES D'EXPERTISE</h2>
+        <p class="text-center text-gray-500 mb-6">Sélectionnez jusqu'à 5 domaines d'activité (DA).</p>
 
-        <form method="post">
+        <form method="post" id="da-form">
             {% csrf_token %}
 
-            <div class="mb-6">
-                <label class="form-label fw-bold">Votre Domaine d'Activité (DA)</label>
-                <select name="domaine" id="domaine-select" class="form-control" style="width: 100%" required>
-                    <option value=""></option> <optgroup label="Technologies & Digital">
-                        <option value="informatique">Informatique & Développement</option>
-                        <option value="cyber">Cybersécurité</option>
-                        <option value="data">Data Science & IA</option>
-                    </optgroup>
-                    <optgroup label="Industrie & BTP">
-                        <option value="petrochimie">Pétrochimie</option>
-                        <option value="batiment">Bâtiment & Travaux Publics (BTP)</option>
-                        <option value="electricite">Génie Électrique</option>
-                    </optgroup>
-                    <optgroup label="Services & Artisanat">
-                        <option value="cuisine">Cuisine & Gastronomie</option>
-                        <option value="hotellerie">Hôtellerie & Tourisme</option>
-                        <option value="esthetique">Esthétique & Cosmétique</option>
-                    </optgroup>
-                    <optgroup label="Finance & Gestion">
-                        <option value="economie">Économie & Finance</option>
-                        <option value="comptabilite">Comptabilité & Audit</option>
-                        <option value="marketing">Marketing & Communication</option>
-                    </optgroup>
-                    </select>
+            <div class="mb-4">
+                <select id="da-search" class="w-full">
+                     <option value=""></option>
+
+    <optgroup label="Digital & Technologie">
+
+        <option value="Informatique">Informatique / Développement Web</option>
+
+        <option value="Cybersecurite">Cybersécurité</option>
+
+        <option value="DataScience">Data Science & IA</option>
+
+        <option value="Reseaux">Réseaux & Télécoms</option>
+
+    </optgroup>
+
+    <optgroup label="Ingénierie & Industrie">
+
+        <option value="Petrochimie">Pétrochimie / Pétrole & Gaz</option>
+
+        <option value="BTP">Bâtiment & Travaux Publics (BTP)</option>
+
+        <option value="Mecanique">Génie Mécanique</option>
+
+        <option value="Electrotechnique">Électrotechnique / Énergie</option>
+
+    </optgroup>
+
+    <optgroup label="Économie & Gestion">
+
+        <option value="Comptabilite">Comptabilité & Audit</option>
+
+        <option value="Banque">Banque & Finance</option>
+
+        <option value="Marketing">Marketing & Communication</option>
+
+        <option value="RH">Ressources Humaines</option>
+
+    </optgroup>
+
+    <optgroup label="Services & Artisanat">
+
+        <option value="Cuisine">Cuisine / Gastronomie</option>
+
+        <option value="Hotellerie">Hôtellerie / Tourisme</option>
+
+        <option value="Sante">Santé / Médecine</option>
+
+        <option value="Logistique">Transport & Logistique</option>
+
+    </optgroup>
+
+</select>
+
             </div>
 
-            <button type="submit" class="btn-register py-3">Finaliser mon profil</button>
+            <div id="tags-container" class="flex flex-wrap gap-2 mb-6 min-h-[40px] p-3 border-2 border-dashed border-gray-200 rounded-xl">
+                </div>
+
+            <input type="hidden" name="domaines_selectionnes" id="final-da-input">
+
+            <button type="submit" class="btn-register w-full py-3 bg-blue-600 text-white rounded-lg font-bold">
+                Finaliser mon profil (<span id="da-count">0</span>/5)
+            </button>
         </form>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
-    $(document).ready(function() {
-        $('#domaine-select').select2({
-            placeholder: "Recherchez votre domaine (ex: Pétrochimie...)",
-            allowClear: true,
-            language: {
-                noResults: function() { return "Aucun domaine trouvé"; }
-            }
-        });
+$(document).ready(function() {
+    let selectedDA = [];
+    const maxDA = 5;
+
+    $('#da-search').select2({
+        placeholder: "Rechercher un domaine...",
+        allowClear: true
     });
+
+    // Quand on choisit un domaine dans la barre
+    $('#da-search').on('select2:select', function (e) {
+        let val = e.params.data.text;
+
+        if (selectedDA.length < maxDA && !selectedDA.includes(val)) {
+            selectedDA.push(val);
+            renderTags();
+        }
+        $(this).val(null).trigger('change'); // Réinitialise la barre après choix
+    });
+
+    function renderTags() {
+        $('#tags-container').empty();
+        selectedDA.forEach((da, index) => {
+            $('#tags-container').append(`
+                <span class="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-2 rounded-full text-sm font-semibold animate-fade-in">
+                    ${da}
+                    <button type="button" onclick="removeDA(${index})" class="hover:text-red-500 font-bold">×</button>
+                </span>
+            `);
+        });
+
+        // Mise à jour de l'input caché et du compteur
+        $('#final-da-input').val(selectedDA.join(','));
+        $('#da-count').text(selectedDA.length);
+    }
+
+    window.removeDA = function(index) {
+        selectedDA.splice(index, 1);
+        renderTags();
+    }
+});
 </script>
 
 <style>
-    /* Ajustement pour que Select2 s'intègre au style de votre carte */
-    .select2-container--default .select2-selection--single {
-        height: 50px;
-        padding-top: 10px;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-    }
+    .animate-fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 {% endblock %}

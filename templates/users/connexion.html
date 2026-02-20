@@ -104,16 +104,20 @@
 
     <!-- Username -->
     <div class="mb-4">
-        <input type="text" name="{{ form.username.name }}" value="{{ form.username.value }}"
+        <input type="text"
+               name="username"
                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-               placeholder="Nom d'utilisateur" required>
+               placeholder="Nom d'utilisateur"
+               required>
     </div>
 
     <!-- Password -->
     <div class="mb-4">
-        <input type="password" name="{{ form.password.name }}"
+       <input type="password"
+               name="password"
                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-               placeholder="Mot de passe" required>
+               placeholder="Mot de passe"
+               required>
     </div>
 
     <button type="submit" class="btn-login">Se connecter</button>

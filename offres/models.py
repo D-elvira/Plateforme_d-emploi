@@ -19,7 +19,7 @@ class Entreprise(models.Model):
     nom = models.CharField(max_length=200)
     ville = models.CharField(max_length=100)
     domaine = models.CharField(max_length=200)
-    legal_info = models.CharField(max_length=200)
+    legal_info = models.ImageField(upload_to='logos_entreprises/', null=True, blank=True)
 
 class Offre(models.Model):
     TYPE_CHOICES = (
