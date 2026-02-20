@@ -47,15 +47,3 @@ class Offre(models.Model):
     ville = models.CharField(max_length=100)
     # Statut de l'offre (par défaut : disponible)
     statut = models.CharField(max_length=20, default='disponible')
-
-
-class Candidature(models.Model):
-    offre = models.ForeignKey(Offre, on_delete=models.CASCADE, related_name='candidatures')
-    nom_complet = models.CharField(max_length=200)
-    email = models.EmailField()
-    cv = models.FileField(upload_to='cv_candidats/')
-    message = models.TextField(blank=True)
-    date_envoi = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Candidature de {self.nom_complet} pour {self.offre.titre}"
