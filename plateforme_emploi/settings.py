@@ -13,7 +13,9 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["*"]
 
 RAILWAY_DOMAIN = os.environ.get("RAILWAY_PUBLIC_DOMAIN", "")
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = [
+    "https://plateformed-emploi-production.up.railway.app",
+]
 if RAILWAY_DOMAIN:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_DOMAIN}")
 extra_origins = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
