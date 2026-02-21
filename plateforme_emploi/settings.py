@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get(
     "SECRET_KEY", "django-insecure-4*)q9r8xt92((tk*z4-!i2sg712)+e0630-7+gfv4i7c8r1yay"
 )
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = True  # TEMPORAIRE pour debug Railway
 
 ALLOWED_HOSTS = ["*"]
 
