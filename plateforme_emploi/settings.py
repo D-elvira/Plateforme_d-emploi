@@ -10,12 +10,15 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
-CSRF_TRUSTED_ORIGINS = (
-    os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
-    if os.environ.get("CSRF_TRUSTED_ORIGINS")
-    else []
-)
+ALLOWED_HOSTS = ["*"]
+
+RAILWAY_DOMAIN = os.environ.get("RAILWAY_PUBLIC_DOMAIN", "")
+CSRF_TRUSTED_ORIGINS = []
+if RAILWAY_DOMAIN:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RAILWAY_DOMAIN}")
+extra_origins = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+if extra_origins:
+    CSRF_TRUSTED_ORIGINS += [o.strip() for o in extra_origins.split(",") if o.strip()]
 
 INSTALLED_APPS = [
     "users",
